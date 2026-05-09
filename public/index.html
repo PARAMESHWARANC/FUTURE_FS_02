@@ -1,0 +1,3045 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise CRM — Lead Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            color: #1a1d23;
+            font-size: 13px;
+            overflow: hidden;
+            height: 100vh
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d0d5dd;
+            border-radius: 2px
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* LOGIN */
+        .login-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a, #1e3a5f, #0f172a)
+        }
+
+        .login-wrap.hide {
+            display: none
+        }
+
+        .login-card {
+            background: #fff;
+            border-radius: 16px;
+            width: 400px;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+            animation: fadeUp 0.5s ease
+        }
+
+        .login-top {
+            background: linear-gradient(135deg, #1a1d23, #2563eb);
+            padding: 28px;
+            text-align: center
+        }
+
+        .login-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px
+        }
+
+        .login-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem
+        }
+
+        .login-logo-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff
+        }
+
+        .login-logo-name span {
+            color: #60a5fa
+        }
+
+        .login-sub {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem
+        }
+
+        .login-body {
+            padding: 24px
+        }
+
+        .login-hint {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.73rem;
+            color: #2563eb;
+            margin-bottom: 16px
+        }
+
+        .lf {
+            margin-bottom: 12px
+        }
+
+        .lf label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px
+        }
+
+        .lf input {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+            color: #1a1d23;
+            transition: all 0.2s
+        }
+
+        .lf input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08)
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px)
+        }
+
+        .login-err {
+            color: #ef4444;
+            font-size: 0.72rem;
+            text-align: center;
+            margin-top: 6px;
+            display: none
+        }
+
+        /* APP */
+        .app {
+            display: flex;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        .app.hide {
+            display: none
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 210px;
+            background: #1a1d23;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0
+        }
+
+        .sb-brand {
+            padding: 16px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06)
+        }
+
+        .sb-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .sb-logo-icon {
+            width: 30px;
+            height: 30px;
+            background: #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem
+        }
+
+        .sb-logo-name {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .sb-nav {
+            flex: 1;
+            padding: 8px 10px;
+            overflow-y: auto
+        }
+
+        .sb-section {
+            font-size: 0.58rem;
+            color: rgba(255, 255, 255, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 10px 4px;
+            font-weight: 600
+        }
+
+        .sb-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1px
+        }
+
+        .sb-item:hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.06)
+        }
+
+        .sb-item.active {
+            color: #fff;
+            background: #2563eb
+        }
+
+        .sb-ic {
+            font-size: 0.85rem;
+            width: 16px;
+            text-align: center
+        }
+
+        .sb-txt {
+            font-weight: 500
+        }
+
+        .sb-badge {
+            margin-left: auto;
+            font-size: 0.58rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            padding: 2px 6px;
+            border-radius: 8px
+        }
+
+        .sb-bottom {
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06)
+        }
+
+        .sb-logout {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            padding: 8px;
+            border-radius: 7px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .sb-logout:hover {
+            background: rgba(239, 68, 68, 0.2)
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        /* TOPNAV */
+        .topnav {
+            background: #fff;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 8px;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0
+        }
+
+        .tn-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1a1d23;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .tn-tabs {
+            display: flex;
+            gap: 0;
+            margin-left: 8px
+        }
+
+        .tn-tab {
+            padding: 4px 12px;
+            font-size: 0.72rem;
+            color: #9ca3af;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 50px
+        }
+
+        .tn-tab.active {
+            color: #2563eb;
+            border-color: #2563eb;
+            font-weight: 600
+        }
+
+        .tn-tab:hover {
+            color: #374151
+        }
+
+        .tn-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .tn-btn-add {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #2563eb;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px
+        }
+
+        .tn-btn-export {
+            background: #2563eb;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: none
+        }
+
+        .tn-count {
+            background: #1a1d23;
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700
+        }
+
+        .tn-notif {
+            font-size: 1rem;
+            cursor: pointer
+        }
+
+        .tn-avatars {
+            display: flex
+        }
+
+        .tn-av {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.65rem;
+            color: #fff;
+            margin-left: -6px
+        }
+
+        /* VIEWS */
+        .view {
+            display: none
+        }
+
+        .view.active {
+            display: block
+        }
+
+        .tab-content {
+            display: none
+        }
+
+        .tab-content.active {
+            display: block
+        }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            background: #f0f2f5
+        }
+
+        /* DASHBOARD HEADER */
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px
+        }
+
+        .dash-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        /* METRIC CARDS */
+        .metric-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .metric {
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+            cursor: pointer
+        }
+
+        .metric:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px)
+        }
+
+        .metric-label {
+            font-size: 0.62rem;
+            color: #9ca3af;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .metric-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem
+        }
+
+        .metric-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a1d23;
+            line-height: 1
+        }
+
+        .metric-sub {
+            font-size: 0.62rem;
+            color: #9ca3af;
+            margin-top: 2px
+        }
+
+        .metric.blue .metric-icon {
+            background: #eff6ff
+        }
+
+        .metric.green .metric-icon {
+            background: #ecfdf5
+        }
+
+        .metric.red .metric-icon {
+            background: #fef2f2
+        }
+
+        .metric.purple .metric-icon {
+            background: #f5f3ff
+        }
+
+        .metric.yellow .metric-icon {
+            background: #fffbeb
+        }
+
+        .metric.teal .metric-icon {
+            background: #f0fdfa
+        }
+
+        /* MIDDLE ROW */
+        .middle-row {
+            display: grid;
+            grid-template-columns: 280px 280px 1fr;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden
+        }
+
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .card-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .card-action {
+            font-size: 0.68rem;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: #f3f4f6;
+            padding: 3px 8px;
+            border-radius: 5px
+        }
+
+        .card-body {
+            padding: 12px
+        }
+
+        .donut-row {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .donut-legend {
+            flex: 1
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            font-size: 0.72rem;
+            color: #374151
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .legend-pct {
+            margin-left: auto;
+            font-weight: 600;
+            color: #1a1d23
+        }
+
+        .line-card {
+            display: flex;
+            flex-direction: column
+        }
+
+        .line-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .line-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .line-filters {
+            display: flex;
+            gap: 6px
+        }
+
+        .lf-btn {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px
+        }
+
+        .lf-btn.active {
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600
+        }
+
+        .line-body {
+            padding: 10px 14px;
+            flex: 1
+        }
+
+        /* BOTTOM ROW */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 10px
+        }
+
+        .table-wrap-outer {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden
+        }
+
+        .table-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .table-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .pills {
+            display: flex;
+            gap: 3px
+        }
+
+        .pill {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            background: #fff;
+            transition: all 0.2s;
+            font-weight: 500
+        }
+
+        .pill.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th {
+            padding: 7px 12px;
+            text-align: left;
+            font-size: 0.62rem;
+            color: #9ca3af;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            background: #fafafa;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f9fafb;
+            font-size: 0.76rem;
+            vertical-align: middle
+        }
+
+        tr:last-child td {
+            border-bottom: none
+        }
+
+        tr:hover td {
+            background: #fafafa
+        }
+
+        .td-lead {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .td-av {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.65rem;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .td-name {
+            font-weight: 600;
+            color: #1a1d23;
+            font-size: 0.76rem
+        }
+
+        .td-email {
+            font-size: 0.65rem;
+            color: #9ca3af
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.62rem;
+            font-weight: 600;
+            display: inline-block
+        }
+
+        .badge.new {
+            background: #eff6ff;
+            color: #2563eb
+        }
+
+        .badge.contacted {
+            background: #fffbeb;
+            color: #d97706
+        }
+
+        .badge.converted {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .badge.lost {
+            background: #fef2f2;
+            color: #dc2626
+        }
+
+        .src-tag {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.62rem
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #f3f4f6;
+            border-radius: 2px;
+            overflow: hidden;
+            width: 60px
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 2px
+        }
+
+        .action-col {
+            display: flex;
+            gap: 3px
+        }
+
+        .abtn {
+            padding: 3px 7px;
+            border: 1px solid;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.15s
+        }
+
+        .abtn:hover {
+            transform: scale(1.05)
+        }
+
+        .ab-e {
+            border-color: #bfdbfe;
+            color: #2563eb
+        }
+
+        .ab-e:hover {
+            background: #eff6ff
+        }
+
+        .ab-c {
+            border-color: #fed7aa;
+            color: #d97706
+        }
+
+        .ab-c:hover {
+            background: #fffbeb
+        }
+
+        .ab-v {
+            border-color: #a7f3d0;
+            color: #059669
+        }
+
+        .ab-v:hover {
+            background: #ecfdf5
+        }
+
+        .ab-l {
+            border-color: #fecaca;
+            color: #dc2626
+        }
+
+        .ab-l:hover {
+            background: #fef2f2
+        }
+
+        .ab-d {
+            border-color: #fecaca;
+            color: #dc2626
+        }
+
+        .ab-d:hover {
+            background: #fef2f2
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 24px;
+            color: #9ca3af;
+            font-size: 0.8rem
+        }
+
+        .bar-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden
+        }
+
+        .bar-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .bar-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .bar-sub {
+            font-size: 0.62rem;
+            color: #9ca3af
+        }
+
+        .bar-body {
+            padding: 12px 14px
+        }
+
+        .pg-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-top: 1px solid #f3f4f6;
+            background: #fafafa
+        }
+
+        .pg-info {
+            font-size: 0.68rem;
+            color: #9ca3af
+        }
+
+        .pg-btns {
+            display: flex;
+            gap: 3px
+        }
+
+        .pg-btn {
+            padding: 3px 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            background: #fff;
+            color: #6b7280
+        }
+
+        .pg-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb
+        }
+
+        /* SECTION STYLES */
+        .section-wrap {
+            padding: 20px
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1d23;
+            margin-bottom: 4px
+        }
+
+        .section-sub {
+            color: #6b7280;
+            font-size: 0.82rem;
+            margin-bottom: 16px
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 16px
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 16px
+        }
+
+        .info-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 18px
+        }
+
+        .info-card h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1a1d23;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .info-card p {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            line-height: 1.6
+        }
+
+        .info-card .big-num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2563eb;
+            margin: 8px 0 4px
+        }
+
+        .info-card .big-num.green {
+            color: #059669
+        }
+
+        .info-card .big-num.red {
+            color: #dc2626
+        }
+
+        .info-card .big-num.orange {
+            color: #d97706
+        }
+
+        /* WIN RATE GAUGE */
+        .gauge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0
+        }
+
+        .gauge-label {
+            font-size: 0.68rem;
+            color: #9ca3af;
+            margin-top: 6px
+        }
+
+        /* ACTIVITY FEED */
+        .activity-feed {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f9fafb
+        }
+
+        .activity-item:last-child {
+            border-bottom: none
+        }
+
+        .act-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0
+        }
+
+        .act-text {
+            flex: 1
+        }
+
+        .act-title {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #1a1d23
+        }
+
+        .act-time {
+            font-size: 0.65rem;
+            color: #9ca3af
+        }
+
+        .act-badge {
+            font-size: 0.6rem;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: 600
+        }
+
+        /* SETTINGS FORM */
+        .settings-section {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 18px;
+            margin-bottom: 14px
+        }
+
+        .settings-section h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1a1d23;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f9fafb
+        }
+
+        .setting-row:last-child {
+            border-bottom: none
+        }
+
+        .setting-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #374151
+        }
+
+        .setting-desc {
+            font-size: 0.68rem;
+            color: #9ca3af
+        }
+
+        .toggle {
+            width: 36px;
+            height: 20px;
+            border-radius: 10px;
+            background: #e5e7eb;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0
+        }
+
+        .toggle.on {
+            background: #2563eb
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2)
+        }
+
+        .toggle.on::after {
+            left: 18px
+        }
+
+        .settings-input {
+            padding: 6px 10px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-family: inherit;
+            outline: none;
+            color: #1a1d23;
+            width: 180px
+        }
+
+        .settings-input:focus {
+            border-color: #2563eb
+        }
+
+        .settings-btn {
+            padding: 7px 16px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px
+        }
+
+        .settings-btn.red {
+            background: #ef4444
+        }
+
+        .settings-btn.green {
+            background: #059669
+        }
+
+        /* INTEGRATION CARDS */
+        .int-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 18px
+        }
+
+        .int-card-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px
+        }
+
+        .int-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem
+        }
+
+        .int-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .int-desc {
+            font-size: 0.72rem;
+            color: #9ca3af;
+            margin-bottom: 12px;
+            line-height: 1.5
+        }
+
+        .int-status {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 10px
+        }
+
+        .int-status.connected {
+            background: #ecfdf5;
+            color: #059669
+        }
+
+        .int-status.disconnected {
+            background: #fef2f2;
+            color: #dc2626
+        }
+
+        .int-btn {
+            width: 100%;
+            padding: 7px;
+            border-radius: 7px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s
+        }
+
+        .int-btn.connect {
+            background: #2563eb;
+            color: #fff
+        }
+
+        .int-btn.connect:hover {
+            background: #1d4ed8
+        }
+
+        .int-btn.disconnect {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca
+        }
+
+        .int-form {
+            margin-top: 10px;
+            display: none
+        }
+
+        .int-form.show {
+            display: block
+        }
+
+        .int-input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-family: inherit;
+            outline: none;
+            margin-bottom: 6px
+        }
+
+        .int-input:focus {
+            border-color: #2563eb
+        }
+
+        .int-send-btn {
+            width: 100%;
+            padding: 7px;
+            border-radius: 6px;
+            background: #059669;
+            color: #fff;
+            border: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px
+        }
+
+        /* RESOURCES */
+        .guide-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 18px
+        }
+
+        .guide-card h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1a1d23;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f9fafb
+        }
+
+        .guide-step:last-child {
+            border-bottom: none
+        }
+
+        .step-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        .step-text {
+            font-size: 0.76rem;
+            color: #374151;
+            line-height: 1.5
+        }
+
+        .step-text strong {
+            color: #1a1d23
+        }
+
+        .faq-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer
+        }
+
+        .faq-q {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #1a1d23;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .faq-a {
+            font-size: 0.73rem;
+            color: #6b7280;
+            margin-top: 6px;
+            line-height: 1.6;
+            display: none
+        }
+
+        .faq-a.show {
+            display: block
+        }
+
+        .support-form input,
+        .support-form textarea,
+        .support-form select {
+            width: 100%;
+            padding: 8px 11px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+            color: #1a1d23;
+            margin-bottom: 10px;
+            background: #fafafa
+        }
+
+        .support-form input:focus,
+        .support-form textarea:focus,
+        .support-form select:focus {
+            border-color: #2563eb
+        }
+
+        .support-form textarea {
+            height: 80px;
+            resize: none
+        }
+
+        /* SALES TAB */
+        .sales-kpi {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 14px
+        }
+
+        .kpi-label {
+            font-size: 0.62rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px
+        }
+
+        .kpi-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a1d23
+        }
+
+        .kpi-change {
+            font-size: 0.65rem;
+            margin-top: 2px;
+            font-weight: 600
+        }
+
+        .kpi-change.up {
+            color: #059669
+        }
+
+        .kpi-change.down {
+            color: #dc2626
+        }
+
+        /* MODAL */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px)
+        }
+
+        .overlay.show {
+            display: flex
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 460px;
+            animation: fadeUp 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15)
+        }
+
+        .modal-top {
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .modal-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1a1d23
+        }
+
+        .modal-close {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 6px;
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .modal-close:hover {
+            background: #fee2e2;
+            color: #ef4444
+        }
+
+        .modal-body {
+            padding: 16px 18px
+        }
+
+        .fg {
+            margin-bottom: 12px
+        }
+
+        .fg label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px
+        }
+
+        .fg input,
+        .fg select,
+        .fg textarea {
+            width: 100%;
+            padding: 8px 11px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+            color: #1a1d23;
+            transition: all 0.2s;
+            background: #fafafa
+        }
+
+        .fg input:focus,
+        .fg select:focus,
+        .fg textarea:focus {
+            border-color: #2563eb;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06)
+        }
+
+        .fg textarea {
+            resize: none;
+            height: 65px
+        }
+
+        .fg2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+
+        .modal-foot {
+            padding: 10px 18px;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            background: #fafafa;
+            border-radius: 0 0 12px 12px
+        }
+
+        .mf-cancel {
+            padding: 7px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 7px;
+            background: #fff;
+            color: #6b7280;
+            font-size: 0.76rem;
+            cursor: pointer
+        }
+
+        .mf-save {
+            padding: 7px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+        .mf-save:hover {
+            background: #1d4ed8
+        }
+
+        .mf-green {
+            background: #059669
+        }
+
+        .mf-green:hover {
+            background: #047857
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            display: none;
+            z-index: 999;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            align-items: center;
+            gap: 6px
+        }
+
+        .toast.show {
+            display: flex
+        }
+
+        .toast.ok {
+            background: #059669;
+            color: #fff
+        }
+
+        .toast.err {
+            background: #ef4444;
+            color: #fff
+        }
+
+        .toast.info {
+            background: #2563eb;
+            color: #fff
+        }
+
+        .toast.warn {
+            background: #d97706;
+            color: #fff
+        }
+
+        @media(max-width:1200px) {
+            .metric-row {
+                grid-template-columns: repeat(3, 1fr)
+            }
+
+            .middle-row {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                display: none
+            }
+
+            .bottom-row {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-wrap" id="loginWrap">
+        <div class="login-card">
+            <div class="login-top">
+                <div class="login-logo">
+                    <div class="login-logo-icon">⊙</div>
+                    <div class="login-logo-name">enterprise<span>CRM</span></div>
+                </div>
+                <div class="login-sub">Client Lead Management System</div>
+            </div>
+            <div class="login-body">
+                <div class="login-hint">🔑 Username: <strong>admin</strong> · Password: <strong>admin123</strong></div>
+                <div class="lf"><label>Username</label><input id="lu" type="text" value="admin"
+                        placeholder="Enter username"></div>
+                <div class="lf"><label>Password</label><input id="lp" type="password" value="admin123"
+                        placeholder="••••••••"></div>
+                <div class="login-err" id="lerr">❌ Invalid credentials. Try admin / admin123</div>
+                <button class="login-btn" onclick="login()">Sign In →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div class="app hide" id="app">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sb-brand">
+                <div class="sb-logo">
+                    <div class="sb-logo-icon">⊙</div>
+                    <div class="sb-logo-name">enterpriseCRM</div>
+                </div>
+            </div>
+            <div class="sb-nav">
+                <div class="sb-section">Main</div>
+                <div class="sb-item" onclick="showView('dashboard',this)">
+                    <div class="sb-ic">📊</div><span class="sb-txt">Dashboard</span>
+                </div>
+                <div class="sb-item active" onclick="showView('leads',this)">
+                    <div class="sb-ic">👥</div><span class="sb-txt">Leads</span><span class="sb-badge"
+                        id="sbLeadCount">0</span>
+                </div>
+                <div class="sb-item" onclick="showView('contacts',this)">
+                    <div class="sb-ic">📋</div><span class="sb-txt">Contacts</span>
+                </div>
+                <div class="sb-section">Analytics</div>
+                <div class="sb-item" onclick="showView('reports',this)">
+                    <div class="sb-ic">📈</div><span class="sb-txt">Reports</span>
+                </div>
+                <div class="sb-section">System</div>
+                <div class="sb-item" onclick="showView('integrations',this)">
+                    <div class="sb-ic">🔗</div><span class="sb-txt">Integrations</span>
+                </div>
+                <div class="sb-item" onclick="showView('settings',this)">
+                    <div class="sb-ic">⚙️</div><span class="sb-txt">Settings</span>
+                </div>
+                <div class="sb-item" onclick="showView('resources',this)">
+                    <div class="sb-ic">📁</div><span class="sb-txt">Resources</span>
+                </div>
+            </div>
+            <div class="sb-bottom"><button class="sb-logout" onclick="logout()">🚪 Sign Out</button></div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+            <!-- TOPNAV -->
+            <div class="topnav">
+                <div class="tn-title" id="tnTitle">👥 Lead Management</div>
+                <div class="tn-tabs" id="tnTabs">
+                    <div class="tn-tab active" onclick="showTab('overview',this)">🔍 Overview</div>
+                    <div class="tn-tab" onclick="showTab('activity',this)">📋 Activity</div>
+                    <div class="tn-tab" onclick="showTab('settings-tab',this)">⚙️ Settings</div>
+                    <div class="tn-tab" onclick="showTab('sales',this)">📊 Sales</div>
+                </div>
+                <div class="tn-right">
+                    <div class="tn-btn-add" onclick="openAdd()">⊕ Add Lead</div>
+                    <button class="tn-btn-export" onclick="exportCSV()">📤 Export</button>
+                    <div class="tn-count" id="tnCnt">0</div>
+                    <div class="tn-notif">🔔</div>
+                    <div class="tn-avatars">
+                        <div class="tn-av" style="background:#2563eb">A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+
+                <!-- ===== LEADS VIEW ===== -->
+                <div class="view active" id="view-leads">
+                    <!-- OVERVIEW TAB -->
+                    <div class="tab-content active" id="tab-overview">
+                        <div class="dash-header">
+                            <div class="dash-title">Lead Management</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric blue" onclick="setFilter('all',null)">
+                                <div class="metric-label">Total Leads <div class="metric-icon blue">👥</div>
+                                </div>
+                                <div class="metric-val" id="m1">0</div>
+                                <div class="metric-sub">All leads</div>
+                            </div>
+                            <div class="metric green" onclick="setFilter('new',null)">
+                                <div class="metric-label">New <div class="metric-icon green">🆕</div>
+                                </div>
+                                <div class="metric-val" id="m2">0</div>
+                                <div class="metric-sub">Awaiting contact</div>
+                            </div>
+                            <div class="metric purple" onclick="setFilter('contacted',null)">
+                                <div class="metric-label">Contacted <div class="metric-icon purple">📞</div>
+                                </div>
+                                <div class="metric-val" id="m3">0</div>
+                                <div class="metric-sub">In progress</div>
+                            </div>
+                            <div class="metric teal" onclick="setFilter('converted',null)">
+                                <div class="metric-label">Converted <div class="metric-icon teal">✅</div>
+                                </div>
+                                <div class="metric-val" id="m4">0</div>
+                                <div class="metric-sub">Won deals</div>
+                            </div>
+                            <div class="metric red" onclick="setFilter('lost',null)">
+                                <div class="metric-label">Lost <div class="metric-icon red">❌</div>
+                                </div>
+                                <div class="metric-val" id="m5">0</div>
+                                <div class="metric-sub">Closed lost</div>
+                            </div>
+                            <div class="metric yellow">
+                                <div class="metric-label">Win Rate <div class="metric-icon yellow">📊</div>
+                                </div>
+                                <div class="metric-val" id="m6">0%</div>
+                                <div class="metric-sub">Conversion rate</div>
+                            </div>
+                        </div>
+                        <div class="middle-row">
+                            <div class="card">
+                                <div class="card-head">
+                                    <div class="card-title">Lead Status</div>
+                                    <div class="card-action">Filter ▾</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="donut-row"><canvas id="donut1" width="90" height="90"></canvas>
+                                        <div class="donut-legend" id="leg1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-head">
+                                    <div class="card-title">Lead Sources</div>
+                                    <div class="card-action">Filter ▾</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="donut-row"><canvas id="donut2" width="90" height="90"></canvas>
+                                        <div class="donut-legend" id="leg2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card line-card">
+                                <div class="line-head">
+                                    <div class="line-title">Lead Activity Trend</div>
+                                    <div class="line-filters">
+                                        <div class="lf-btn active">Monthly</div>
+                                        <div class="lf-btn">Weekly</div>
+                                    </div>
+                                </div>
+                                <div class="line-body"><canvas id="lineChart" height="80"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="bottom-row">
+                            <div class="table-wrap-outer">
+                                <div class="table-head">
+                                    <div class="table-title">All Leads</div>
+                                    <div class="table-actions">
+                                        <div class="pills">
+                                            <div class="pill active" onclick="setFilter('all',this)">All</div>
+                                            <div class="pill" onclick="setFilter('new',this)">New</div>
+                                            <div class="pill" onclick="setFilter('contacted',this)">Contacted</div>
+                                            <div class="pill" onclick="setFilter('converted',this)">Converted</div>
+                                            <div class="pill" onclick="setFilter('lost',this)">Lost</div>
+                                        </div>
+                                        <button class="add-btn" onclick="openAdd()">+ Add Lead</button>
+                                    </div>
+                                </div>
+                                <div id="tbl">
+                                    <div class="empty-row">📭 No leads yet. Click "+ Add Lead" to get started!</div>
+                                </div>
+                                <div class="pg-row">
+                                    <div class="pg-info" id="pgInfo">0 leads</div>
+                                    <div class="pg-btns" id="pgBtns"></div>
+                                </div>
+                            </div>
+                            <div class="bar-card">
+                                <div class="bar-head">
+                                    <div>
+                                        <div class="bar-title">Leads by Source</div>
+                                        <div class="bar-sub">Distribution Overview</div>
+                                    </div>
+                                </div>
+                                <div class="bar-body"><canvas id="barChart" height="180"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACTIVITY TAB -->
+                    <div class="tab-content" id="tab-activity">
+                        <div class="dash-header">
+                            <div class="dash-title">Activity Log</div>
+                        </div>
+                        <div class="activity-feed" id="activityFeed">
+                            <div class="empty-row">📭 No activity yet. Start adding leads!</div>
+                        </div>
+                    </div>
+
+                    <!-- SETTINGS TAB -->
+                    <div class="tab-content" id="tab-settings-tab">
+                        <div class="dash-header">
+                            <div class="dash-title">Quick Settings</div>
+                        </div>
+                        <div class="settings-section">
+                            <h3>Display Preferences</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Show Lead Count Badge</div>
+                                    <div class="setting-desc">Display count on sidebar</div>
+                                </div>
+                                <div class="toggle on" onclick="this.classList.toggle('on')" id="tog1"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Email Notifications</div>
+                                    <div class="setting-desc">Get notified on new leads</div>
+                                </div>
+                                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Auto-refresh Data</div>
+                                    <div class="setting-desc">Refresh every 30 seconds</div>
+                                </div>
+                                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Leads Per Page</div>
+                                    <div class="setting-desc">Number of leads shown in table</div>
+                                </div>
+                                <select class="settings-input" onchange="PER=parseInt(this.value);render()">
+                                    <option value="6">6</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SALES TAB -->
+                    <div class="tab-content" id="tab-sales">
+                        <div class="dash-header">
+                            <div class="dash-title">Sales Overview</div>
+                        </div>
+                        <div class="sales-kpi">
+                            <div class="kpi-card">
+                                <div class="kpi-label">Total Pipeline</div>
+                                <div class="kpi-val" id="sk1">₹0</div>
+                                <div class="kpi-change up" id="sk1c">↑ 0 leads</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Won Deals</div>
+                                <div class="kpi-val" id="sk2">0</div>
+                                <div class="kpi-change up" id="sk2c">↑ Converted</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Lost Deals</div>
+                                <div class="kpi-val" id="sk3">0</div>
+                                <div class="kpi-change down" id="sk3c">↓ Lost</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Win Rate</div>
+                                <div class="kpi-val" id="sk4">0%</div>
+                                <div class="kpi-change up">Conversion rate</div>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="info-card">
+                                <h3>📊 Sales Funnel</h3>
+                                <canvas id="funnelChart" height="150"></canvas>
+                            </div>
+                            <div class="info-card">
+                                <h3>🏆 Top Sources</h3>
+                                <div id="topSources" style="margin-top:10px"></div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>📋 Converted Leads (Won Deals)</h3>
+                            <div id="salesTable" style="margin-top:10px">
+                                <div class="empty-row">No converted leads yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== DASHBOARD VIEW ===== -->
+                <div class="view" id="view-dashboard">
+                    <div class="section-wrap">
+                        <div class="section-title">📊 Dashboard</div>
+                        <div class="section-sub">Live overview of your CRM performance</div>
+                        <div class="grid-3">
+                            <div class="info-card">
+                                <h3>👥 Total Leads</h3>
+                                <div class="big-num" id="db-total">0</div>
+                                <p>All leads in the system</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>✅ Converted</h3>
+                                <div class="big-num green" id="db-conv">0</div>
+                                <p>Successfully won deals</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>📈 Win Rate</h3>
+                                <div class="big-num" id="db-rate">0%</div>
+                                <p>Overall conversion rate</p>
+                                <div class="gauge-wrap"><canvas id="gaugeChart" width="120" height="70"></canvas>
+                                    <div class="gauge-label" id="gaugeLabel">0% Win Rate</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-3">
+                            <div class="info-card">
+                                <h3>🆕 New Leads</h3>
+                                <div class="big-num orange" id="db-new">0</div>
+                                <p>Awaiting first contact</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>📞 Contacted</h3>
+                                <div class="big-num" id="db-contacted">0</div>
+                                <p>Currently in progress</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>❌ Lost</h3>
+                                <div class="big-num red" id="db-lost">0</div>
+                                <p>Closed lost deals</p>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>📋 Recent Leads</h3>
+                            <div id="dashRecentLeads" style="margin-top:10px">
+                                <div class="empty-row">No leads yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CONTACTS VIEW ===== -->
+                <div class="view" id="view-contacts">
+                    <div class="section-wrap">
+                        <div class="section-title">📋 Contacts</div>
+                        <div class="section-sub">All leads are stored as contacts. Manage them below.</div>
+                        <div class="table-wrap-outer" style="margin-bottom:14px">
+                            <div class="table-head">
+                                <div class="table-title">Contact Directory</div>
+                                <div class="table-actions">
+                                    <input id="contactSearch" type="text" placeholder="🔍 Search contacts..."
+                                        style="padding:5px 10px;border:1px solid #e5e7eb;border-radius:6px;font-size:0.75rem;outline:none;width:180px"
+                                        oninput="renderContacts()">
+                                    <button class="add-btn" onclick="openAdd()">+ Add Contact</button>
+                                </div>
+                            </div>
+                            <div id="contactsTable">
+                                <div class="empty-row">No contacts yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== REPORTS VIEW ===== -->
+                <div class="view" id="view-reports">
+                    <div class="section-wrap">
+                        <div class="section-title">📈 Reports</div>
+                        <div class="section-sub">Analytics and performance reports</div>
+                        <div class="grid-3">
+                            <div class="info-card">
+                                <h3>🆕 New Leads</h3>
+                                <div class="big-num orange" id="rpt-new">0</div>
+                                <p>Pending first contact</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>📞 Contacted</h3>
+                                <div class="big-num" id="rpt-contacted">0</div>
+                                <p>Active follow-ups</p>
+                            </div>
+                            <div class="info-card">
+                                <h3>❌ Lost</h3>
+                                <div class="big-num red" id="rpt-lost">0</div>
+                                <p>Closed lost</p>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="info-card">
+                                <h3>📊 Status Breakdown</h3><canvas id="rptDonut" width="200" height="160"
+                                    style="margin:0 auto;display:block"></canvas>
+                            </div>
+                            <div class="info-card">
+                                <h3>🏅 Lead Sources Performance</h3>
+                                <div id="rptSources" style="margin-top:10px"></div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>📋 Full Lead Report</h3>
+                            <div style="display:flex;gap:8px;margin-bottom:10px;margin-top:6px">
+                                <button class="settings-btn" onclick="exportCSV()">📤 Export CSV</button>
+                            </div>
+                            <div id="rptTable">
+                                <div class="empty-row">No data.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== INTEGRATIONS VIEW ===== -->
+                <div class="view" id="view-integrations">
+                    <div class="section-wrap">
+                        <div class="section-title">🔗 Integrations</div>
+                        <div class="section-sub">Connect your CRM with third-party tools</div>
+                        <div class="grid-3">
+
+                            <!-- EMAIL -->
+                            <div class="int-card">
+                                <div class="int-card-top">
+                                    <div class="int-icon" style="background:#eff6ff">📧</div>
+                                    <div class="int-name">Email (Gmail)</div>
+                                </div>
+                                <div class="int-desc">Send emails directly to leads from the CRM. Track open rates and
+                                    responses.</div>
+                                <div class="int-status disconnected" id="emailStatus">● Disconnected</div><br>
+                                <button class="int-btn connect"
+                                    onclick="toggleIntForm('emailForm',this,'emailStatus')">Connect Gmail</button>
+                                <div class="int-form" id="emailForm">
+                                    <input class="int-input" id="emailTo" placeholder="To: lead@email.com">
+                                    <input class="int-input" id="emailSubject" placeholder="Subject">
+                                    <textarea class="int-input" id="emailBody" rows="3"
+                                        placeholder="Message..."></textarea>
+                                    <button class="int-send-btn" onclick="sendEmail()">📤 Send Email</button>
+                                </div>
+                            </div>
+
+                            <!-- WHATSAPP -->
+                            <div class="int-card">
+                                <div class="int-card-top">
+                                    <div class="int-icon" style="background:#ecfdf5">📱</div>
+                                    <div class="int-name">WhatsApp</div>
+                                </div>
+                                <div class="int-desc">Send WhatsApp messages to leads instantly. Perfect for quick
+                                    follow-ups.</div>
+                                <div class="int-status connected" id="waStatus">● Connected</div><br>
+                                <button class="int-btn connect" onclick="toggleIntForm('waForm',this,'waStatus')">Send
+                                    Message</button>
+                                <div class="int-form" id="waForm">
+                                    <input class="int-input" id="waPhone" placeholder="Phone: +91 98765...">
+                                    <textarea class="int-input" id="waMsg" rows="3" placeholder="Message..."></textarea>
+                                    <button class="int-send-btn" onclick="sendWhatsApp()">📱 Open WhatsApp</button>
+                                </div>
+                            </div>
+
+                            <!-- GOOGLE SHEETS -->
+                            <div class="int-card">
+                                <div class="int-card-top">
+                                    <div class="int-icon" style="background:#ecfdf5">📊</div>
+                                    <div class="int-name">Google Sheets</div>
+                                </div>
+                                <div class="int-desc">Export all leads to Google Sheets automatically. Keep your data in
+                                    sync.</div>
+                                <div class="int-status disconnected" id="sheetStatus">● Disconnected</div><br>
+                                <button class="int-btn connect" onclick="exportToSheets()">Export to Sheets</button>
+                                <div id="sheetMsg" style="font-size:0.72rem;color:#059669;margin-top:8px;display:none">✅
+                                    CSV downloaded! Import it into Google Sheets.</div>
+                            </div>
+
+                        </div>
+                        <!-- Integration Log -->
+                        <div class="info-card" style="margin-top:16px">
+                            <h3>📋 Integration Activity Log</h3>
+                            <div id="intLog" style="margin-top:10px">
+                                <div class="empty-row">No integration activity yet.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SETTINGS VIEW ===== -->
+                <div class="view" id="view-settings">
+                    <div class="section-wrap">
+                        <div class="section-title">⚙️ Settings</div>
+                        <div class="section-sub">Manage your CRM preferences and account</div>
+
+                        <div class="settings-section">
+                            <h3>👤 Account Information</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Username</div>
+                                    <div class="setting-desc">Your login username</div>
+                                </div><input class="settings-input" value="admin" readonly>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Full Name</div>
+                                    <div class="setting-desc">Display name</div>
+                                </div><input class="settings-input" id="settingName" value="Administrator"
+                                    placeholder="Your name">
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Email Address</div>
+                                    <div class="setting-desc">Account email</div>
+                                </div><input class="settings-input" id="settingEmail" placeholder="admin@company.com">
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Role</div>
+                                    <div class="setting-desc">Access level</div>
+                                </div><input class="settings-input" value="Administrator" readonly>
+                            </div>
+                            <button class="settings-btn" onclick="saveSettings()">💾 Save Changes</button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>🔔 Notifications</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">New Lead Alerts</div>
+                                    <div class="setting-desc">Get notified when a new lead is added</div>
+                                </div>
+                                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Status Change Alerts</div>
+                                    <div class="setting-desc">Notify when lead status changes</div>
+                                </div>
+                                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Daily Summary Email</div>
+                                    <div class="setting-desc">Receive daily lead summary</div>
+                                </div>
+                                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Weekly Reports</div>
+                                    <div class="setting-desc">Get weekly performance report</div>
+                                </div>
+                                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>🎨 Display Preferences</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Compact Table View</div>
+                                    <div class="setting-desc">Show more leads per row</div>
+                                </div>
+                                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Show Phone Column</div>
+                                    <div class="setting-desc">Display phone in leads table</div>
+                                </div>
+                                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Default Leads Per Page</div>
+                                </div>
+                                <select class="settings-input" onchange="PER=parseInt(this.value);render()">
+                                    <option value="6">6 per page</option>
+                                    <option value="10">10 per page</option>
+                                    <option value="20">20 per page</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>🔐 Security</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Change Password</div>
+                                    <div class="setting-desc">Update your login password</div>
+                                </div><button class="settings-btn"
+                                    onclick="toast('Password change requires backend setup','info')">Change
+                                    Password</button>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Two-Factor Authentication</div>
+                                    <div class="setting-desc">Extra security for your account</div>
+                                </div>
+                                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Session Timeout</div>
+                                    <div class="setting-desc">Auto logout after inactivity</div>
+                                </div>
+                                <select class="settings-input">
+                                    <option>30 minutes</option>
+                                    <option>1 hour</option>
+                                    <option>4 hours</option>
+                                    <option>Never</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>🗑️ Data Management</h3>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Export All Data</div>
+                                    <div class="setting-desc">Download all leads as CSV</div>
+                                </div><button class="settings-btn green" onclick="exportCSV()">📤 Export CSV</button>
+                            </div>
+                            <div class="setting-row">
+                                <div>
+                                    <div class="setting-label">Clear All Leads</div>
+                                    <div class="setting-desc">⚠️ Permanently delete all leads</div>
+                                </div><button class="settings-btn red" onclick="clearAllLeads()">🗑️ Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RESOURCES VIEW ===== -->
+                <div class="view" id="view-resources">
+                    <div class="section-wrap">
+                        <div class="section-title">📁 Resources</div>
+                        <div class="section-sub">User guides, training materials and support</div>
+
+                        <!-- USER GUIDE -->
+                        <div class="guide-card" style="margin-bottom:14px">
+                            <h3>📄 User Guide — Getting Started</h3>
+                            <div class="guide-step">
+                                <div class="step-num">1</div>
+                                <div class="step-text"><strong>Login</strong> — Use username <code>admin</code> and
+                                    password <code>admin123</code> to access the CRM.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">2</div>
+                                <div class="step-text"><strong>Add a Lead</strong> — Click the "+ Add Lead" button. Fill
+                                    in Name, Email, Phone, Source and Notes. Click Save Lead.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">3</div>
+                                <div class="step-text"><strong>Manage Lead Status</strong> — Use the action buttons: 📞
+                                    to mark Contacted, ✅ to mark Converted, ❌ to mark Lost, ✏️ to Edit, 🗑 to Delete.
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">4</div>
+                                <div class="step-text"><strong>Filter Leads</strong> — Use the filter pills (All, New,
+                                    Contacted, Converted, Lost) to filter the table. Click metric cards to filter too.
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">5</div>
+                                <div class="step-text"><strong>Export Data</strong> — Click "📤 Export" to download all
+                                    leads as a CSV file for Excel or Google Sheets.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">6</div>
+                                <div class="step-text"><strong>View Reports</strong> — Go to Reports section to see
+                                    charts, source breakdown and full lead report.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">7</div>
+                                <div class="step-text"><strong>Integrations</strong> — Use the Integrations section to
+                                    send WhatsApp messages or export to Google Sheets.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">8</div>
+                                <div class="step-text"><strong>Dashboard</strong> — The Dashboard shows your win rate
+                                    gauge, total leads, converted count and recent activity.</div>
+                            </div>
+                        </div>
+
+                        <!-- TRAINING -->
+                        <div class="guide-card" style="margin-bottom:14px">
+                            <h3>🎓 Training — Key Concepts</h3>
+                            <div class="guide-step">
+                                <div class="step-num">▶</div>
+                                <div class="step-text"><strong>Lead Pipeline:</strong> New → Contacted → Converted (Won)
+                                    or Lost. Move leads through stages using action buttons.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">▶</div>
+                                <div class="step-text"><strong>Win Rate:</strong> Percentage of leads that become
+                                    Converted. Formula: (Converted ÷ Total Leads) × 100%.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">▶</div>
+                                <div class="step-text"><strong>Lead Source:</strong> Where the lead came from —
+                                    LinkedIn, Website, Referral, Cold Call, Email, Other. Track which sources perform
+                                    best in Reports.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">▶</div>
+                                <div class="step-text"><strong>Activity Log:</strong> Every action (add, edit, delete,
+                                    status change) is recorded in the Activity tab for audit purposes.</div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-num">▶</div>
+                                <div class="step-text"><strong>Contacts:</strong> All leads are stored as contacts. Use
+                                    the search bar in Contacts to quickly find a specific person.</div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ -->
+                        <div class="guide-card" style="margin-bottom:14px">
+                            <h3>❓ Frequently Asked Questions</h3>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">How do I add a new lead? <span>+</span></div>
+                                <div class="faq-a">Click the "+ Add Lead" button in the top right or in the leads table.
+                                    Fill in the required fields (Name and Email are mandatory) and click Save Lead.
+                                </div>
+                            </div>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">How do I change a lead's status? <span>+</span></div>
+                                <div class="faq-a">Use the action buttons in the table: 📞 marks as Contacted, ✅ marks
+                                    as Converted, ❌ marks as Lost. Or click ✏️ Edit and change the status dropdown.
+                                </div>
+                            </div>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">How do I export leads? <span>+</span></div>
+                                <div class="faq-a">Click the "📤 Export" button in the top navigation. A CSV file will
+                                    be downloaded with all lead data including Name, Email, Phone, Source, Status and
+                                    Date.</div>
+                            </div>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">What is the Win Rate? <span>+</span></div>
+                                <div class="faq-a">Win Rate is the percentage of total leads that have been Converted.
+                                    It is calculated as: (Number of Converted Leads ÷ Total Leads) × 100.</div>
+                            </div>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">How do I send a WhatsApp message to a lead? <span>+</span></div>
+                                <div class="faq-a">Go to Integrations → WhatsApp → Click "Send Message" → Enter the
+                                    phone number and message → Click "Open WhatsApp". It will open WhatsApp Web with the
+                                    message pre-filled.</div>
+                            </div>
+                            <div class="faq-item" onclick="toggleFaq(this)">
+                                <div class="faq-q">Where is my data stored? <span>+</span></div>
+                                <div class="faq-a">All lead data is stored in MongoDB Atlas (cloud database). Your data
+                                    is safe and accessible as long as the server is running.</div>
+                            </div>
+                        </div>
+
+                        <!-- SUPPORT -->
+                        <div class="guide-card">
+                            <h3>📞 Contact Support</h3>
+                            <p style="font-size:0.76rem;color:#6b7280;margin-bottom:14px">Having issues? Submit a
+                                support request below.</p>
+                            <div class="support-form">
+                                <input id="supportName" placeholder="Your Name" type="text">
+                                <input id="supportEmail" placeholder="Your Email" type="email">
+                                <select id="supportType">
+                                    <option>Bug Report</option>
+                                    <option>Feature Request</option>
+                                    <option>General Question</option>
+                                    <option>Data Issue</option>
+                                </select>
+                                <textarea id="supportMsg" placeholder="Describe your issue in detail..."></textarea>
+                                <button class="settings-btn" onclick="submitSupport()">📤 Submit Request</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD MODAL -->
+    <div class="overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-top">
+                <div class="modal-title">➕ Add New Lead</div><button class="modal-close"
+                    onclick="closeM('addModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="fg2">
+                    <div class="fg"><label>Full Name *</label><input id="an" type="text" placeholder="Rahul Kumar">
+                    </div>
+                    <div class="fg"><label>Phone</label><input id="ap" type="tel" placeholder="+91 98765..."></div>
+                </div>
+                <div class="fg"><label>Email *</label><input id="ae" type="email" placeholder="rahul@company.com"></div>
+                <div class="fg2">
+                    <div class="fg"><label>Company</label><input id="aco" type="text" placeholder="Company Ltd."></div>
+                    <div class="fg"><label>Source</label>
+                        <select id="as">
+                            <option>LinkedIn</option>
+                            <option>Website</option>
+                            <option>Referral</option>
+                            <option>Cold Call</option>
+                            <option>Email</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="fg"><label>Notes</label><textarea id="ano" placeholder="Notes..."></textarea></div>
+            </div>
+            <div class="modal-foot"><button class="mf-cancel" onclick="closeM('addModal')">Cancel</button><button
+                    class="mf-save" onclick="addLead()">💾 Save Lead</button></div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-top">
+                <div class="modal-title">✏️ Edit Lead</div><button class="modal-close"
+                    onclick="closeM('editModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="eid">
+                <div class="fg2">
+                    <div class="fg"><label>Full Name *</label><input id="en" type="text"></div>
+                    <div class="fg"><label>Phone</label><input id="ep" type="tel"></div>
+                </div>
+                <div class="fg"><label>Email *</label><input id="ee" type="email"></div>
+                <div class="fg2">
+                    <div class="fg"><label>Source</label><select id="es">
+                            <option>LinkedIn</option>
+                            <option>Website</option>
+                            <option>Referral</option>
+                            <option>Cold Call</option>
+                            <option>Email</option>
+                            <option>Other</option>
+                        </select></div>
+                    <div class="fg"><label>Status</label><select id="est">
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="converted">Converted</option>
+                            <option value="lost">Lost</option>
+                        </select></div>
+                </div>
+                <div class="fg"><label>Notes</label><textarea id="eno"></textarea></div>
+            </div>
+            <div class="modal-foot"><button class="mf-cancel" onclick="closeM('editModal')">Cancel</button><button
+                    class="mf-save mf-green" onclick="saveLead()">💾 Update</button></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // AUTH
+        function login() {
+            const u = document.getElementById('lu').value.trim(), p = document.getElementById('lp').value.trim();
+            if (u === 'admin' && p === 'admin123') {
+                document.getElementById('loginWrap').classList.add('hide');
+                document.getElementById('app').classList.remove('hide');
+                fetchLeads();
+            } else { document.getElementById('lerr').style.display = 'block'; }
+        }
+        function logout() { document.getElementById('app').classList.add('hide'); document.getElementById('loginWrap').classList.remove('hide'); }
+        document.getElementById('lp').addEventListener('keypress', e => { if (e.key === 'Enter') login() });
+
+        // ACTIVITY LOG
+        let activityLog = [];
+        function logActivity(icon, title, color = '#2563eb') {
+            activityLog.unshift({ icon, title, color, time: new Date() });
+            if (activityLog.length > 50) activityLog.pop();
+            renderActivity();
+        }
+        function renderActivity() {
+            const el = document.getElementById('activityFeed');
+            if (!activityLog.length) { el.innerHTML = '<div class="empty-row">📭 No activity yet.</div>'; return; }
+            el.innerHTML = activityLog.map(a => `
+    <div class="activity-item">
+      <div class="act-icon" style="background:${a.color}20;color:${a.color}">${a.icon}</div>
+      <div class="act-text"><div class="act-title">${a.title}</div><div class="act-time">${formatTime(a.time)}</div></div>
+    </div>`).join('');
+        }
+        function formatTime(d) { const now = new Date(), diff = Math.floor((now - d) / 1000); if (diff < 60) return 'just now'; if (diff < 3600) return Math.floor(diff / 60) + 'm ago'; return d.toLocaleTimeString('en-IN'); }
+
+        // VIEW + TAB NAVIGATION
+        const viewTitles = { dashboard: '📊 Dashboard', leads: '👥 Lead Management', contacts: '📋 Contacts', reports: '📈 Reports', integrations: '🔗 Integrations', settings: '⚙️ Settings', resources: '📁 Resources' };
+        let currentView = 'leads';
+        function showView(name, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const view = document.getElementById('view-' + name); if (view) view.classList.add('active');
+            document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+            if (el) el.classList.add('active');
+            document.getElementById('tnTitle').textContent = viewTitles[name] || name;
+            currentView = name;
+            // show/hide tabs
+            document.getElementById('tnTabs').style.display = name === 'leads' ? 'flex' : 'none';
+            if (name === 'reports') { updateReports(); }
+            if (name === 'dashboard') { updateDashboard(); }
+            if (name === 'contacts') { renderContacts(); }
+        }
+        function showTab(name, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const tab = document.getElementById('tab-' + name); if (tab) tab.classList.add('active');
+            document.querySelectorAll('.tn-tab').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+            if (name === 'sales') updateSales();
+        }
+
+        // TOAST
+        let tTimer;
+        function toast(msg, type = 'ok') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show ' + type; clearTimeout(tTimer); tTimer = setTimeout(() => t.classList.remove('show'), 3000); }
+
+        function openAdd() { document.getElementById('addModal').classList.add('show'); }
+        function closeM(id) { document.getElementById(id).classList.remove('show'); }
+
+        const COLS = ['#2563eb', '#7c3aed', '#059669', '#d97706', '#dc2626', '#0891b2', '#c026d3', '#ea580c'];
+        function gc(n) { let h = 0; for (let c of n) h = c.charCodeAt(0) + ((h << 5) - h); return COLS[Math.abs(h) % COLS.length]; }
+
+        const API = '/api/leads';
+        let leads = [], filter = 'all', page = 1;
+        let PER = 6;
+
+        async function fetchLeads() {
+            try { const r = await fetch(API); leads = await r.json(); } catch (e) { leads = []; }
+            render(); metrics(); charts(); renderActivity();
+        }
+
+        async function addLead() {
+            const n = document.getElementById('an').value.trim(), e = document.getElementById('ae').value.trim();
+            if (!n || !e) { toast('Name & Email are required!', 'err'); return; }
+            const body = { name: n, email: e, phone: document.getElementById('ap').value.trim(), source: document.getElementById('as').value, notes: document.getElementById('ano').value.trim() };
+            try {
+                await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                closeM('addModal');
+                ['an', 'ae', 'ap', 'ano', 'aco'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+                toast('✅ Lead added!');
+                logActivity('➕', `New lead added: ${n}`, '#2563eb');
+                fetchLeads();
+            } catch (e) { toast('Error adding lead', 'err'); }
+        }
+
+        function openEdit(l) {
+            document.getElementById('eid').value = l._id || l.id || '';
+            document.getElementById('en').value = l.name;
+            document.getElementById('ep').value = l.phone || '';
+            document.getElementById('ee').value = l.email;
+            document.getElementById('es').value = l.source;
+            document.getElementById('est').value = l.status;
+            document.getElementById('eno').value = l.notes || '';
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        async function saveLead() {
+            const id = document.getElementById('eid').value, n = document.getElementById('en').value.trim(), e = document.getElementById('ee').value.trim();
+            if (!n || !e) { toast('Required!', 'err'); return; }
+            const body = { name: n, email: e, phone: document.getElementById('ep').value.trim(), source: document.getElementById('es').value, status: document.getElementById('est').value, notes: document.getElementById('eno').value.trim() };
+            try {
+                await fetch(`${API}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                closeM('editModal'); toast('✅ Updated!');
+                logActivity('✏️', `Lead updated: ${n}`, '#7c3aed');
+                fetchLeads();
+            } catch (e) { toast('Error', 'err'); }
+        }
+
+        async function setStatus(id, status) {
+            try {
+                await fetch(`${API}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+                const lead = leads.find(l => (l._id || l.id) === id);
+                const icons = { contacted: '📞', converted: '✅', lost: '❌' };
+                logActivity(icons[status] || '🔄', `${lead ? lead.name : 'Lead'} marked as ${status}`, '#059669');
+                toast('Status updated!', 'info'); fetchLeads();
+            } catch (e) { toast('Error', 'err'); }
+        }
+
+        async function delLead(id) {
+            if (!confirm('Delete this lead?')) return;
+            try {
+                const lead = leads.find(l => (l._id || l.id) === id);
+                await fetch(`${API}/${id}`, { method: 'DELETE' });
+                logActivity('🗑️', `Lead deleted: ${lead ? lead.name : ''}`, '#dc2626');
+                toast('Deleted!', 'warn'); fetchLeads();
+            } catch (e) { toast('Error', 'err'); }
+        }
+
+        async function clearAllLeads() {
+            if (!confirm('⚠️ Delete ALL leads? This cannot be undone!')) return;
+            try {
+                await Promise.all(leads.map(l => fetch(`${API}/${l._id || l.id}`, { method: 'DELETE' })));
+                toast('All leads cleared!', 'warn');
+                logActivity('🗑️', 'All leads cleared', '#dc2626');
+                fetchLeads();
+            } catch (e) { toast('Error', 'err'); }
+        }
+
+        function setFilter(f, el) {
+            filter = f; page = 1;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            if (el) el.classList.add('active');
+            else { document.querySelectorAll('.pill').forEach(p => { if (p.textContent.toLowerCase() === f || p.textContent === 'All' && f === 'all') p.classList.add('active'); }); }
+            render();
+            if (currentView !== 'leads') showView('leads', document.querySelector('.sb-item.active'));
+        }
+
+        function filtered() { return leads.filter(l => filter === 'all' || l.status === filter); }
+
+        function render() {
+            const f = filtered(), total = f.length, pages = Math.ceil(total / PER) || 1;
+            if (page > pages) page = 1;
+            const start = (page - 1) * PER, paged = f.slice(start, start + PER);
+            document.getElementById('pgInfo').textContent = `${total ? start + 1 : 0}–${Math.min(start + paged.length, total)} of ${total} leads`;
+            document.getElementById('pgBtns').innerHTML = Array.from({ length: pages }, (_, i) => `<button class="pg-btn${page === i + 1 ? ' active' : ''}" onclick="goPage(${i + 1})">${i + 1}</button>`).join('');
+            const tbl = document.getElementById('tbl');
+            if (!paged.length) { tbl.innerHTML = '<div class="empty-row">🔍 No leads found.</div>'; return; }
+            tbl.innerHTML = `<table><thead><tr>
+    <th><input type="checkbox"></th><th>Lead</th><th>Source</th><th>Phone</th><th>Status</th><th>Date</th><th>Actions</th>
+  </tr></thead><tbody>${paged.map(l => {
+                const c = gc(l.name), date = l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN') : '—';
+                return `<tr>
+      <td><input type="checkbox"></td>
+      <td><div class="td-lead"><div class="td-av" style="background:${c}">${l.name.charAt(0).toUpperCase()}</div><div><div class="td-name">${l.name}</div><div class="td-email">${l.email}</div></div></div></td>
+      <td><span class="src-tag">${l.source}</span></td>
+      <td style="color:#6b7280">${l.phone || '—'}</td>
+      <td><span class="badge ${l.status}">${l.status.charAt(0).toUpperCase() + l.status.slice(1)}</span></td>
+      <td style="color:#9ca3af;font-size:0.68rem">${date}</td>
+      <td><div class="action-col">
+        <button class="abtn ab-e" onclick='openEdit(${JSON.stringify(l)})'>✏️</button>
+        ${l.status === 'new' ? `<button class="abtn ab-c" onclick="setStatus('${l._id || l.id}','contacted')">📞</button>` : ''}
+        ${l.status === 'contacted' ? `<button class="abtn ab-v" onclick="setStatus('${l._id || l.id}','converted')">✅</button>` : ''}
+        ${l.status !== 'lost' && l.status !== 'converted' ? `<button class="abtn ab-l" onclick="setStatus('${l._id || l.id}','lost')">❌</button>` : ''}
+        <button class="abtn ab-d" onclick="delLead('${l._id || l.id}')">🗑</button>
+      </div></td>
+    </tr>`;
+            }).join('')}</tbody></table>`;
+        }
+        function goPage(p) { page = p; render(); }
+
+        function metrics() {
+            const total = leads.length, nw = leads.filter(l => l.status === 'new').length, co = leads.filter(l => l.status === 'contacted').length, cv = leads.filter(l => l.status === 'converted').length, lo = leads.filter(l => l.status === 'lost').length;
+            const rate = total ? Math.round(cv / total * 100) : 0;
+            document.getElementById('tnCnt').textContent = total;
+            document.getElementById('sbLeadCount').textContent = total;
+            document.getElementById('m1').textContent = total;
+            document.getElementById('m2').textContent = nw;
+            document.getElementById('m3').textContent = co;
+            document.getElementById('m4').textContent = cv;
+            document.getElementById('m5').textContent = lo;
+            document.getElementById('m6').textContent = rate + '%';
+        }
+
+        // DASHBOARD
+        function updateDashboard() {
+            const total = leads.length, cv = leads.filter(l => l.status === 'converted').length, nw = leads.filter(l => l.status === 'new').length, co = leads.filter(l => l.status === 'contacted').length, lo = leads.filter(l => l.status === 'lost').length;
+            const rate = total ? Math.round(cv / total * 100) : 0;
+            document.getElementById('db-total').textContent = total;
+            document.getElementById('db-conv').textContent = cv;
+            document.getElementById('db-rate').textContent = rate + '%';
+            document.getElementById('db-new').textContent = nw;
+            document.getElementById('db-contacted').textContent = co;
+            document.getElementById('db-lost').textContent = lo;
+            drawGauge(rate);
+            // Recent leads
+            const el = document.getElementById('dashRecentLeads');
+            if (!leads.length) { el.innerHTML = '<div class="empty-row">No leads yet.</div>'; return; }
+            const recent = leads.slice(0, 5);
+            el.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Source</th><th>Status</th><th>Date</th></tr></thead><tbody>${recent.map(l => `<tr><td><div class="td-lead"><div class="td-av" style="background:${gc(l.name)};width:22px;height:22px;font-size:0.6rem">${l.name.charAt(0)}</div>${l.name}</div></td><td style="color:#9ca3af;font-size:0.72rem">${l.email}</td><td><span class="src-tag">${l.source}</span></td><td><span class="badge ${l.status}">${l.status}</span></td><td style="color:#9ca3af;font-size:0.68rem">${l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN') : '—'}</td></tr>`).join('')}</tbody></table>`;
+        }
+
+        function drawGauge(pct) {
+            const c = document.getElementById('gaugeChart'); if (!c) return;
+            const ctx = c.getContext('2d'); ctx.clearRect(0, 0, 120, 70);
+            const cx = 60, cy = 65, r = 50, start = Math.PI, end = 2 * Math.PI;
+            ctx.beginPath(); ctx.arc(cx, cy, r, start, end); ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 12; ctx.lineCap = 'round'; ctx.stroke();
+            const color = pct >= 70 ? '#059669' : pct >= 40 ? '#d97706' : '#dc2626';
+            const filled = start + (end - start) * (pct / 100);
+            ctx.beginPath(); ctx.arc(cx, cy, r, start, filled); ctx.strokeStyle = color; ctx.lineWidth = 12; ctx.lineCap = 'round'; ctx.stroke();
+            ctx.fillStyle = '#1a1d23'; ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pct + '%', cx, cy - 8);
+            document.getElementById('gaugeLabel').textContent = pct + '% Win Rate';
+            document.getElementById('gaugeLabel').style.color = color;
+        }
+
+        // CONTACTS
+        function renderContacts() {
+            const q = (document.getElementById('contactSearch') || {}).value || '';
+            const el = document.getElementById('contactsTable');
+            let filtered = leads;
+            if (q) filtered = leads.filter(l => l.name.toLowerCase().includes(q.toLowerCase()) || l.email.toLowerCase().includes(q.toLowerCase()) || l.phone && l.phone.includes(q));
+            if (!filtered.length) { el.innerHTML = '<div class="empty-row">No contacts found.</div>'; return; }
+            el.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Company</th><th>Source</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead><tbody>${filtered.map(l => `<tr>
+    <td><div class="td-lead"><div class="td-av" style="background:${gc(l.name)}">${l.name.charAt(0)}</div><div class="td-name">${l.name}</div></div></td>
+    <td style="color:#6b7280;font-size:0.72rem">${l.email}</td>
+    <td style="color:#6b7280">${l.phone || '—'}</td>
+    <td style="color:#9ca3af">${l.company || '—'}</td>
+    <td><span class="src-tag">${l.source}</span></td>
+    <td><span class="badge ${l.status}">${l.status}</span></td>
+    <td style="color:#9ca3af;font-size:0.68rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.notes || '—'}</td>
+    <td><div class="action-col">
+      <button class="abtn ab-e" onclick='openEdit(${JSON.stringify(l)})'>✏️</button>
+      <button class="abtn ab-d" onclick="delLead('${l._id || l.id}')">🗑</button>
+    </div></td>
+  </tr>`).join('')}</tbody></table>`;
+        }
+
+        // REPORTS
+        function updateReports() {
+            const total = leads.length, nw = leads.filter(l => l.status === 'new').length, co = leads.filter(l => l.status === 'contacted').length, cv = leads.filter(l => l.status === 'converted').length, lo = leads.filter(l => l.status === 'lost').length;
+            document.getElementById('rpt-new').textContent = nw;
+            document.getElementById('rpt-contacted').textContent = co;
+            document.getElementById('rpt-lost').textContent = lo;
+            // Donut
+            drawDonutBig('rptDonut', [{ v: nw || (!total ? 1 : 0), c: '#2563eb', l: 'New' }, { v: co, c: '#7c3aed', l: 'Contacted' }, { v: cv, c: '#059669', l: 'Converted' }, { v: lo, c: '#dc2626', l: 'Lost' }]);
+            // Sources
+            const sources = {}; leads.forEach(l => { sources[l.source] = (sources[l.source] || 0) + 1; });
+            const srcEl = document.getElementById('rptSources');
+            srcEl.innerHTML = Object.entries(sources).sort((a, b) => b[1] - a[1]).map(([k, v]) => `
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:0.76rem;margin-bottom:3px"><span>${k}</span><strong>${v} leads</strong></div>
+      <div style="height:6px;background:#f3f4f6;border-radius:3px"><div style="width:${Math.round(v / total * 100)}%;height:6px;background:#2563eb;border-radius:3px"></div></div>
+    </div>`).join('') || '<div class="empty-row">No data.</div>';
+            // Full table
+            const rptEl = document.getElementById('rptTable');
+            if (!leads.length) { rptEl.innerHTML = '<div class="empty-row">No leads.</div>'; return; }
+            rptEl.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Source</th><th>Status</th><th>Date</th></tr></thead><tbody>${leads.map((l, i) => `<tr><td style="color:#9ca3af">${i + 1}</td><td>${l.name}</td><td style="color:#6b7280;font-size:0.72rem">${l.email}</td><td style="color:#6b7280">${l.phone || '—'}</td><td><span class="src-tag">${l.source}</span></td><td><span class="badge ${l.status}">${l.status}</span></td><td style="color:#9ca3af;font-size:0.68rem">${l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN') : '—'}</td></tr>`).join('')}</tbody></table>`;
+        }
+
+        function drawDonutBig(id, segs) {
+            const c = document.getElementById(id); if (!c) return;
+            const ctx = c.getContext('2d'), W = c.width, H = c.height, cx = W / 2, cy = H / 2, r = Math.min(W, H) / 2 - 10;
+            ctx.clearRect(0, 0, W, H);
+            const tot = segs.reduce((a, s) => a + s.v, 0) || 1; let st = -Math.PI / 2;
+            segs.forEach(s => { if (!s.v) return; const a = (s.v / tot) * Math.PI * 2; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, st, st + a); ctx.closePath(); ctx.fillStyle = s.c; ctx.fill(); st += a; });
+            ctx.beginPath(); ctx.arc(cx, cy, r * 0.55, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+            ctx.fillStyle = '#1a1d23'; ctx.font = 'bold 13px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tot + ' total', cx, cy);
+        }
+
+        // SALES
+        function updateSales() {
+            const total = leads.length, cv = leads.filter(l => l.status === 'converted').length, lo = leads.filter(l => l.status === 'lost').length;
+            const rate = total ? Math.round(cv / total * 100) : 0;
+            document.getElementById('sk1').textContent = '₹' + total * 50000;
+            document.getElementById('sk1c').textContent = '↑ ' + total + ' leads';
+            document.getElementById('sk2').textContent = cv;
+            document.getElementById('sk3').textContent = lo;
+            document.getElementById('sk4').textContent = rate + '%';
+            // Funnel
+            drawFunnel();
+            // Top sources
+            const sources = {}; leads.forEach(l => { sources[l.source] = (sources[l.source] || 0) + 1; });
+            const srcEl = document.getElementById('topSources');
+            srcEl.innerHTML = Object.entries(sources).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v], i) => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:20px;height:20px;border-radius:4px;background:${['#2563eb', '#7c3aed', '#059669', '#d97706', '#dc2626'][i]};display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:700">${i + 1}</div>
+      <div style="flex:1"><div style="font-size:0.76rem;font-weight:600">${k}</div><div style="height:4px;background:#f3f4f6;border-radius:2px;margin-top:2px"><div style="width:${Math.round(v / leads.length * 100)}%;height:4px;background:${['#2563eb', '#7c3aed', '#059669', '#d97706', '#dc2626'][i]};border-radius:2px"></div></div></div>
+      <div style="font-size:0.76rem;font-weight:700;color:#1a1d23">${v}</div>
+    </div>`).join('') || '<div class="empty-row">No data.</div>';
+            // Sales table
+            const converted = leads.filter(l => l.status === 'converted');
+            const el = document.getElementById('salesTable');
+            if (!converted.length) { el.innerHTML = '<div class="empty-row">No converted leads yet.</div>'; return; }
+            el.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Source</th><th>Date</th></tr></thead><tbody>${converted.map(l => `<tr><td><div class="td-lead"><div class="td-av" style="background:${gc(l.name)}">${l.name.charAt(0)}</div>${l.name}</div></td><td style="color:#6b7280;font-size:0.72rem">${l.email}</td><td>${l.phone || '—'}</td><td><span class="src-tag">${l.source}</span></td><td style="color:#9ca3af;font-size:0.68rem">${l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN') : '—'}</td></tr>`).join('')}</tbody></table>`;
+        }
+
+        function drawFunnel() {
+            const c = document.getElementById('funnelChart'); if (!c) return;
+            const ctx = c.getContext('2d'); c.width = c.parentElement.offsetWidth - 36; ctx.clearRect(0, 0, c.width, c.height);
+            const total = leads.length || 1, nw = leads.filter(l => l.status === 'new').length, co = leads.filter(l => l.status === 'contacted').length, cv = leads.filter(l => l.status === 'converted').length;
+            const stages = [{ l: 'Total', v: leads.length, c: '#2563eb' }, { l: 'New', v: nw, c: '#7c3aed' }, { l: 'Contacted', v: co, c: '#d97706' }, { l: 'Converted', v: cv, c: '#059669' }];
+            const W = c.width, H = c.height, bh = 30, gap = 8;
+            stages.forEach((s, i) => {
+                const w = W * (s.v || 0.01) / (leads.length || 1);
+                const x = (W - w) / 2, y = i * (bh + gap);
+                ctx.fillStyle = s.c + '30'; ctx.fillRect(0, y, W, bh);
+                ctx.fillStyle = s.c; ctx.fillRect(x, y, Math.max(w, 4), bh);
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(`${s.l}: ${s.v}`, W / 2, y + bh / 2);
+            });
+        }
+
+        // CHARTS
+        function drawDonut(canvasId, legendId, segs) {
+            const dc = document.getElementById(canvasId); if (!dc) return;
+            const dctx = dc.getContext('2d'); dctx.clearRect(0, 0, 90, 90);
+            const tot = segs.reduce((a, s) => a + s.v, 0) || 1; let start = -Math.PI / 2;
+            segs.forEach(s => { if (!s.v) return; const a = (s.v / tot) * Math.PI * 2; dctx.beginPath(); dctx.moveTo(45, 45); dctx.arc(45, 45, 40, start, start + a); dctx.closePath(); dctx.fillStyle = s.c; dctx.fill(); start += a; });
+            dctx.beginPath(); dctx.arc(45, 45, 27, 0, Math.PI * 2); dctx.fillStyle = '#fff'; dctx.fill();
+            const pct = segs[0] ? Math.round(segs[0].v / tot * 100) : 0;
+            dctx.fillStyle = '#1a1d23'; dctx.font = 'bold 11px Inter'; dctx.textAlign = 'center'; dctx.textBaseline = 'middle'; dctx.fillText(pct + '%', 45, 45);
+            const leg = document.getElementById(legendId);
+            if (leg) leg.innerHTML = segs.map(s => `<div class="legend-item"><div class="legend-dot" style="background:${s.c}"></div>${s.l}<span class="legend-pct">${tot ? Math.round(s.v / tot * 100) : 0}%</span></div>`).join('');
+        }
+
+        function charts() {
+            const total = leads.length, nw = leads.filter(l => l.status === 'new').length, co = leads.filter(l => l.status === 'contacted').length, cv = leads.filter(l => l.status === 'converted').length, lo = leads.filter(l => l.status === 'lost').length;
+            drawDonut('donut1', 'leg1', [{ v: nw || (total === 0 ? 1 : 0), c: '#2563eb', l: 'New' }, { v: co, c: '#7c3aed', l: 'Contacted' }, { v: cv, c: '#059669', l: 'Converted' }, { v: lo, c: '#dc2626', l: 'Lost' }]);
+            const sources = {}; leads.forEach(l => { sources[l.source] = (sources[l.source] || 0) + 1; });
+            const srcColors = ['#0891b2', '#dc2626', '#059669', '#d97706', '#7c3aed', '#ea580c'];
+            const srcSegs = Object.entries(sources).map(([k, v], i) => ({ v, c: srcColors[i % srcColors.length], l: k }));
+            if (!srcSegs.length) srcSegs.push({ v: 1, c: '#e5e7eb', l: 'No data' });
+            drawDonut('donut2', 'leg2', srcSegs);
+            drawLineChart(); drawBarChart(sources);
+        }
+
+        function drawLineChart() {
+            const lc = document.getElementById('lineChart'); if (!lc) return;
+            const ctx = lc.getContext('2d'); lc.width = lc.parentElement.offsetWidth - 4; ctx.clearRect(0, 0, lc.width, lc.height);
+            const W = lc.width, H = lc.height, p = { t: 8, r: 8, b: 20, l: 24 }, gW = W - p.l - p.r, gH = H - p.t - p.b;
+            const cv = leads.filter(l => l.status === 'converted').length;
+            const d1 = [2, 3, 4, 3, 5, 4, 6, 5, 7, 6, 8, leads.length || 3], d2 = [1, 2, 2, 1, 3, 2, 4, 3, 5, 4, 6, cv || 1];
+            const max = Math.max(...d1, ...d2, 6);
+            ctx.strokeStyle = '#f3f4f6'; ctx.lineWidth = 1;
+            [0, 1, 2, 3].forEach(i => { const y = p.t + gH * (i / 3); ctx.beginPath(); ctx.moveTo(p.l, y); ctx.lineTo(W - p.r, y); ctx.stroke(); });
+            ['Jan', 'Apr', 'Jul', 'Oct'].forEach((m, i) => { const x = p.l + gW * (i / 3); ctx.fillStyle = '#9ca3af'; ctx.font = '8px Inter'; ctx.textAlign = 'center'; ctx.fillText(m, x, H - 2); });
+            function line(data, color, fill) {
+                const pts = data.map((v, i) => ({ x: p.l + gW * (i / (data.length - 1)), y: p.t + gH * (1 - v / max) }));
+                if (fill) { const g = ctx.createLinearGradient(0, p.t, 0, H - p.b); g.addColorStop(0, color + '25'); g.addColorStop(1, color + '03'); ctx.beginPath(); pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)); ctx.lineTo(pts[pts.length - 1].x, H - p.b); ctx.lineTo(pts[0].x, H - p.b); ctx.closePath(); ctx.fillStyle = g; ctx.fill(); }
+                ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.lineJoin = 'round'; pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)); ctx.stroke();
+                pts.forEach(pt => { ctx.beginPath(); ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke(); });
+            }
+            line(d1, '#2563eb', true); line(d2, '#f97316', false);
+        }
+
+        function drawBarChart(sources) {
+            const bc = document.getElementById('barChart'); if (!bc) return;
+            const bctx = bc.getContext('2d'); bc.width = bc.parentElement.offsetWidth - 28; bctx.clearRect(0, 0, bc.width, bc.height);
+            const BW = bc.width, BH = bc.height, bp = { t: 10, r: 8, b: 24, l: 28 }, bW = BW - bp.l - bp.r, bH = BH - bp.t - bp.b;
+            const srcNames = Object.keys(sources), srcVals = Object.values(sources);
+            const bars = srcVals.length ? srcVals : [1, 2, 3, 2, 1, 2];
+            const blabels = srcNames.length ? srcNames : ['LinkedIn', 'Website', 'Referral', 'Cold Call', 'Email', 'Other'];
+            const bmax = Math.max(...bars, 5);
+            [0, 1, 2, 3, 4].forEach(i => { const y = bp.t + bH * (i / 4); bctx.strokeStyle = '#f3f4f6'; bctx.lineWidth = 1; bctx.beginPath(); bctx.moveTo(bp.l, y); bctx.lineTo(BW - bp.r, y); bctx.stroke(); bctx.fillStyle = '#9ca3af'; bctx.font = '8px Inter'; bctx.textAlign = 'right'; bctx.fillText(Math.round(bmax * (1 - i / 4)), bp.l - 2, y + 3); });
+            const bw = Math.max(8, bW / bars.length - 8);
+            const bColors = ['#3b82f6', '#7c3aed', '#059669', '#d97706', '#dc2626', '#0891b2'];
+            bars.forEach((v, i) => { const x = bp.l + bW * (i / bars.length) + 2, h = bH * (v / bmax), y = bp.t + bH - h; bctx.fillStyle = bColors[i % bColors.length]; bctx.beginPath(); bctx.roundRect(x, y, bw, h, 2); bctx.fill(); });
+            blabels.forEach((l, i) => { const x = bp.l + bW * (i / bars.length) + bw / 2 + 2; bctx.fillStyle = '#9ca3af'; bctx.font = '7px Inter'; bctx.textAlign = 'center'; bctx.fillText(l.substring(0, 6), x, BH - 4); });
+        }
+
+        // INTEGRATIONS
+        let intLogs = [];
+        function logInt(msg) { intLogs.unshift({ msg, time: new Date() }); const el = document.getElementById('intLog'); el.innerHTML = intLogs.map(l => `<div class="activity-item"><div class="act-icon" style="background:#eff6ff;color:#2563eb">🔗</div><div class="act-text"><div class="act-title">${l.msg}</div><div class="act-time">${formatTime(l.time)}</div></div></div>`).join(''); }
+
+        function toggleIntForm(formId, btn, statusId) {
+            const form = document.getElementById(formId);
+            form.classList.toggle('show');
+            if (form.classList.contains('show')) { btn.textContent = 'Hide Form'; } else { btn.textContent = btn.dataset.orig || 'Connect'; }
+        }
+
+        function sendEmail() {
+            const to = document.getElementById('emailTo').value.trim(), sub = document.getElementById('emailSubject').value.trim(), body = document.getElementById('emailBody').value.trim();
+            if (!to || !sub) { toast('Fill To and Subject!', 'err'); return; }
+            window.location.href = `mailto:${to}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
+            logInt(`Email sent to: ${to} — Subject: ${sub}`);
+            toast('📧 Email client opened!', 'info');
+            document.getElementById('emailStatus').textContent = '● Connected';
+            document.getElementById('emailStatus').className = 'int-status connected';
+        }
+
+        function sendWhatsApp() {
+            const phone = document.getElementById('waPhone').value.trim().replace(/\D/g, ''), msg = document.getElementById('waMsg').value.trim();
+            if (!phone) { toast('Enter phone number!', 'err'); return; }
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg || 'Hello!')}','_blank'`);
+            logInt(`WhatsApp message sent to: +${phone}`);
+            toast('📱 WhatsApp opened!', 'info');
+        }
+
+        function exportToSheets() {
+            exportCSV();
+            document.getElementById('sheetMsg').style.display = 'block';
+            document.getElementById('sheetStatus').textContent = '● Connected';
+            document.getElementById('sheetStatus').className = 'int-status connected';
+            logInt('Leads exported as CSV for Google Sheets import');
+            toast('📊 CSV downloaded! Import into Google Sheets.', 'info');
+        }
+
+        // SETTINGS
+        function saveSettings() {
+            const name = document.getElementById('settingName').value, email = document.getElementById('settingEmail').value;
+            logActivity('⚙️', `Settings updated by ${name}`, '#6b7280');
+            toast('✅ Settings saved!', 'ok');
+        }
+
+        // RESOURCES
+        function toggleFaq(el) {
+            const ans = el.querySelector('.faq-a'), span = el.querySelector('.faq-q span');
+            ans.classList.toggle('show');
+            span.textContent = ans.classList.contains('show') ? '−' : '+';
+        }
+
+        function submitSupport() {
+            const name = document.getElementById('supportName').value.trim(), msg = document.getElementById('supportMsg').value.trim();
+            if (!name || !msg) { toast('Please fill all fields!', 'err'); return; }
+            toast('✅ Support request submitted!', 'ok');
+            logActivity('📞', `Support request from: ${name}`, '#7c3aed');
+            document.getElementById('supportName').value = '';
+            document.getElementById('supportEmail').value = '';
+            document.getElementById('supportMsg').value = '';
+        }
+
+        // EXPORT CSV
+        function exportCSV() {
+            if (!leads.length) { toast('No leads to export!', 'err'); return; }
+            const h = ['#', 'Name', 'Email', 'Phone', 'Source', 'Status', 'Notes', 'Date'];
+            const rows = leads.map((l, i) => [i + 1, l.name, l.email, l.phone || '', l.source, l.status, l.notes || '', l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN')]);
+            const csv = [h, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            a.download = `CRM_Leads_${new Date().toISOString().split('T')[0]}.csv`; a.click();
+            toast('📤 Exported!', 'info');
+            logActivity('📤', 'Leads exported to CSV', '#059669');
+        }
+
+        window.addEventListener('resize', () => { charts(); if (currentView === 'reports') updateReports(); if (currentView === 'leads') updateSales(); });
+    </script>
+</body>
+
+</html>
+
+
