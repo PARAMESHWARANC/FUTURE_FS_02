@@ -2647,7 +2647,7 @@
         const COLS = ['#2563eb', '#7c3aed', '#059669', '#d97706', '#dc2626', '#0891b2', '#c026d3', '#ea580c'];
         function gc(n) { let h = 0; for (let c of n) h = c.charCodeAt(0) + ((h << 5) - h); return COLS[Math.abs(h) % COLS.length]; }
 
-        const API = '/api/leads';
+        const API = 'https://future-fs-02-g51b.onrender.com/api/leads';
         let leads = [], filter = 'all', page = 1;
         let PER = 6;
 
@@ -3041,5 +3041,3 @@
 </body>
 
 </html>
-
-
