@@ -19,7 +19,7 @@
             background: #f0f2f5;
             color: #1a1d23;
             font-size: 13px;
-            overflow: hidden;
+            overflow: auto;
             height: 100vh
         }
 
@@ -1721,6 +1721,52 @@
 
             .bottom-row {
                 grid-template-columns: 1fr
+            }
+
+            .middle-row {
+                grid-template-columns: 1fr
+            }
+
+            .metric-row {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr
+            }
+
+            .sales-kpi {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .content {
+                overflow-y: auto
+            }
+        }
+
+        @media(max-width:600px) {
+            .metric-row {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr
+            }
+
+            .fg2 {
+                grid-template-columns: 1fr
+            }
+
+            .tn-btn-export {
+                display: none
+            }
+
+            table {
+                font-size: 0.65rem
             }
         }
     </style>
